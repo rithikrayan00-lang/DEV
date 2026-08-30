@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Academic Performance Analyzer</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <i class="fas fa-chart-bar"></i>
+                </div>
+                <div class="brand-text">
+                    <h3>Analytics</h3>
+                    <p>Dashboard</p>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-section="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-section="analytics">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item" data-section="upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Upload Data</span>
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">AD</div>
+                    <div class="user-info">
+                        <p class="user-name">Admin</p>
+                        <p class="user-status">Online</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 class="page-title">Student Academic Performance Analyzer</h1>
+                </div>
+
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search students...">
+                    </div>
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="refresh-btn" id="refreshBtn" title="Refresh data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="section active">
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Total Students</p>
+                            <h3 class="kpi-value" id="totalStudents">0</h3>
+                            <p class="kpi-sublabel">in current view</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon exam">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Avg Exam Marks</p>
+                            <h3 class="kpi-value" id="avgExamMarks">0</h3>
+                            <p class="kpi-sublabel">out of 50</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon attendance">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Avg Attendance</p>
+                            <h3 class="kpi-value" id="avgAttendance">0</h3>
+                            <p class="kpi-sublabel">attendance %</p>
+                        </div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-icon performance">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="kpi-content">
+                            <p class="kpi-label">Avg Total Marks</p>
+                            <h3 class="kpi-value" id="avgTotalMarks">0</h3>
+                            <p class="kpi-sublabel">out of 100</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="filter-section">
+                    <div class="filter-header">
+                        <h2>DataFrame Filters</h2>
+                        <button class="filter-reset" id="resetFilters" title="Reset all filters">
+                            <i class="fas fa-undo"></i> Reset
+                        </button>
+                    </div>
+
+                    <div class="filter-buttons">
+                        <button class="filter-btn active" data-filter="all">
+                            <i class="fas fa-check-circle"></i> Show All
+                        </button>
+                        <button class="filter-btn" data-filter="cse">
+                            <i class="fas fa-laptop-code"></i> CSE Only
+                        </button>
+                        <button class="filter-btn" data-filter="highAttendance">
+                            <i class="fas fa-check"></i> High Attendance (>90%)
+                        </button>
+                        <button class="filter-btn" data-filter="needsSupport">
+                            <i class="fas fa-exclamation-circle"></i> Needs Support (<40)
+                        </button>
+                    </div>
+
+                    <div class="sort-section">
+                        <label for="sortBy">Sort By:</label>
+                        <select id="sortBy">
+                            <option value="name">Name (A-Z)</option>
+                            <option value="attendance">Attendance (High to Low)</option>
+                            <option value="examMarks">Exam Marks (High to Low)</option>
+                            <option value="totalMarks">Total Marks (High to Low)</option>
+                            <option value="dept">Department</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Data Table -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2>Student Records</h2>
+                        <button class="export-btn" id="exportBtn" title="Export as CSV">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+
+                    <div class="table-wrapper">
+                        <table class="data-table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th class="sortable" data-column="id">ID <i class="fas fa-arrow-down"></i></th>
+                                    <th class="sortable" data-column="name">Name <i class="fas fa-arrow-down"></i></th>
+                                    <th class="sortable" data-column="dept">Department <i class="fas fa-arrow-down"></i></th>
+                                    <th class="sortable" data-column="attendance">Attendance <i class="fas fa-arrow-down"></i></th>
+                                    <th class="sortable" data-column="examMarks">Exam Marks <i class="fas fa-arrow-down"></i></th>
+                                    <th class="sortable" data-column="totalMarks">Total Marks <i class="fas fa-arrow-down"></i></th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="table-footer">
+                        <p id="recordCount">Showing 0 records</p>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h2>Performance Comparison</h2>
+                            <div class="chart-info">
+                                <p>Total Marks vs Exam Marks by Student</p>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="performanceChart" role="img" aria-label="Bar chart comparing student marks"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon success">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Highest Marks</p>
+                                <h4 class="stat-value" id="highestMarks">0</h4>
+                                <p class="stat-student" id="highestStudent">-</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon danger">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Lowest Marks</p>
+                                <h4 class="stat-value" id="lowestMarks">0</h4>
+                                <p class="stat-student" id="lowestStudent">-</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon info">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Pass Rate</p>
+                                <h4 class="stat-value" id="passRate">0%</h4>
+                                <p class="stat-student">Exam ≥ 40</p>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">At Risk</p>
+                                <h4 class="stat-value" id="atRisk">0</h4>
+                                <p class="stat-student">Below threshold</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload Section -->
+            <section id="upload-section" class="section">
+                <div class="upload-container">
+                    <div class="upload-card">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <h2>Upload Dataset</h2>
+                        <p class="upload-description">Upload a CSV or JSON file containing student data</p>
+
+                        <div class="upload-dropzone" id="dropzone">
+                            <i class="fas fa-file-import"></i>
+                            <p>Drag and drop your file here</p>
+                            <p class="upload-or">or</p>
+                            <button class="upload-btn">
+                                <i class="fas fa-folder-open"></i> Click to Browse
+                            </button>
+                            <input type="file" id="fileInput" accept=".csv,.json" style="display: none;">
+                        </div>
+
+                        <div class="upload-info">
+                            <h3>Supported Formats:</h3>
+                            <ul>
+                                <li><strong>CSV:</strong> Comma-separated values with headers</li>
+                                <li><strong>JSON:</strong> Array of objects with student data</li>
+                            </ul>
+
+                            <h3>Required Columns:</h3>
+                            <ul>
+                                <li>id - Student ID (number)</li>
+                                <li>name - Student Name (text)</li>
+                                <li>dept - Department (text: CSE, ECE, IT, etc.)</li>
+                                <li>attendance - Attendance % (0-100)</li>
+                                <li>examMarks - Exam Marks (0-50)</li>
+                                <li>totalMarks - Total Marks (0-100)</li>
+                            </ul>
+
+                            <h3>Example CSV Format:</h3>
+                            <pre><code>id,name,dept,attendance,examMarks,totalMarks
+101,Arun,CSE,92,45,86
+102,Priya,CSE,95,47,90</code></pre>
+
+                            <h3>Example JSON Format:</h3>
+                            <pre><code>[
+  { "id": 101, "name": "Arun", "dept": "CSE", "attendance": 92, "examMarks": 45, "totalMarks": 86 },
+  { "id": 102, "name": "Priya", "dept": "CSE", "attendance": 95, "examMarks": 47, "totalMarks": 90 }
+]</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="upload-template">
+                        <h3>Download Template</h3>
+                        <p>Use these templates to format your data correctly</p>
+                        <div class="template-buttons">
+                            <button class="template-btn" id="downloadCSV">
+                                <i class="fas fa-file-csv"></i> CSV Template
+                            </button>
+                            <button class="template-btn" id="downloadJSON">
+                                <i class="fas fa-file-code"></i> JSON Template
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics-section" class="section">
+                <div class="analytics-container">
+                    <div class="analytics-card">
+                        <h2>Department Performance</h2>
+                        <div class="chart-container">
+                            <canvas id="deptChart" role="img" aria-label="Department performance chart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="analytics-card">
+                        <h2>Attendance Distribution</h2>
+                        <div class="chart-container">
+                            <canvas id="attendanceChart" role="img" aria-label="Attendance distribution chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings-section" class="section">
+                <div class="settings-container">
+                    <div class="settings-card">
+                        <h2>Settings</h2>
+
+                        <div class="settings-group">
+                            <label>Theme</label>
+                            <div class="setting-option">
+                                <input type="radio" id="darkTheme" name="theme" value="dark" checked>
+                                <label for="darkTheme">Dark Mode</label>
+                            </div>
+                            <div class="setting-option">
+                                <input type="radio" id="lightTheme" name="theme" value="light">
+                                <label for="lightTheme">Light Mode</label>
+                            </div>
+                        </div>
+
+                        <div class="settings-group">
+                            <label for="passThreshold">Pass Threshold (Exam Marks)</label>
+                            <input type="number" id="passThreshold" min="0" max="50" value="40">
+                        </div>
+
+                        <div class="settings-group">
+                            <label>Data Management</label>
+                            <button class="danger-btn" id="resetData">
+                                <i class="fas fa-trash"></i> Reset to Default Data
+                            </button>
+                        </div>
+
+                        <div class="settings-group">
+                            <button class="success-btn" id="saveSettings">
+                                <i class="fas fa-save"></i> Save Settings
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="settings-card">
+                        <h2>About</h2>
+                        <div class="about-content">
+                            <p><strong>Student Academic Performance Analyzer v1.0</strong></p>
+                            <p>A modern dashboard for analyzing student academic data in real-time.</p>
+                            <p class="about-features">
+                                <strong>Features:</strong><br>
+                                ✓ Real-time data filtering and sorting<br>
+                                ✓ Interactive charts and visualizations<br>
+                                ✓ CSV/JSON file upload support<br>
+                                ✓ Export filtered data<br>
+                                ✓ Dark/Light theme support<br>
+                                ✓ Responsive design
+                            </p>
+                            <p class="about-footer">Built with vanilla HTML, CSS, and JavaScript</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Modal for Student Details -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div id="modalBody">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
